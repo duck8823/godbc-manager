@@ -98,24 +98,17 @@ func (manager GodbcManager) FindAll(entity interface{}) ([]interface{}, error) {
 			valuePointers[i] = &values[i]
 		}
 
-		err := rows.Scan(valuePointers...)
-		if err != nil {
-			return nil, err
-		}
-
+		rows.Scan(valuePointers...)
 		for i := 0; i < t.NumField(); i++ {
 			f := v.Field(i)
-			var value interface{}
-			val := values[i]
+			value := values[i]
 			switch v.Field(i).Kind() {
-			default:
-				value = val
 			case reflect.Int:
-				value = int(val.(int64))
+				value = int(value.(int64))
 			case reflect.String:
-				value = string(val.([]byte))
+				value = string(value.([]byte))
 			case reflect.Bool:
-				value, _ = strconv.ParseBool(string(val.([]byte)))
+				value, _ = strconv.ParseBool(string(value.([]byte)))
 			}
 			f.Set(reflect.ValueOf(value))
 		}
