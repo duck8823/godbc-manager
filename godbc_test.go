@@ -35,14 +35,6 @@ func TestGodbcManager_Create(t *testing.T) {
 	if !reflect.DeepEqual(expect, actual) {
 		t.Fatal("カラムが一致しません.", actual, expect)
 	}
-
-	type Fail struct {
-		Col []byte
-	}
-	err := manager.Create(Fail{})
-	if err == nil {
-		t.Fatal("[]byte型は対応していないのでエラーとなるはずです.")
-	}
 }
 
 func TestGodbcManager_Drop(t *testing.T) {
@@ -109,43 +101,14 @@ func TestGodbcManager_FindAll(t *testing.T) {
 	actual, _ := manager.FindAll(&Test{})
 	expect := []Test{{1, "name_1", true}, {2, "name_2", false}}
 
-	var errs []interface{}
+	var err []interface{}
 	for i := range actual {
 		if !reflect.DeepEqual(actual[i], expect[i]) {
-			errs = append(errs, "データが一致しません.", actual[i], expect[i])
+			err = append(err, "データが一致しません.", actual[i], expect[i])
 		}
 		i++
 	}
-	if len(errs) > 0 {
-		t.Fatal(errs)
-	}
-
-	manager.Drop(Test{})
-	actual, err := manager.FindAll(&Test{})
-	if err == nil {
-		t.Fatal("FindAllに失敗した場合はerrが返されるはずです.")
-	}
-}
-
-func TestGodbcManager_toString(t *testing.T) {
-	result, err := toString("test")
-	if result != "test" {
-		t.Error()
-	}
-
-	result, err = toString(1)
-	if result != "1" {
-		t.Error()
-	}
-
-	result, err = toString(true)
-	if result != "true" {
-		t.Error()
-	}
-
-	var fail []byte
-	result, err = toString(fail)
-	if err == nil {
-		t.Error()
+	if len(err) > 0 {
+		t.Fatal(err)
 	}
 }
