@@ -20,6 +20,7 @@ import (
 	"github.com/duck8823/godbc-manager"
 )
 
+// 構造体の定義
 type Hoge struct {
 	Id int
 	Name string
@@ -27,16 +28,19 @@ type Hoge struct {
 }
 
 func main() {
+	// データベースへの接続
 	manager, _ := godbc.Connection("sqlite3", "./test.db")
+	// テーブルの作成
 	manager.Create(Hoge{})
+	// データの挿入
 	manager.Insert(Hoge{1, "name1", true})
 	manager.Insert(Hoge{2, "name2", false})
-
+	// データの取得
 	rows, _ := manager.FindAll(&Hoge{})
 	for i := range rows {
 		fmt.Println(rows[i].(Hoge))
 	}
-
+	// テーブルの削除
 	manager.Drop(Hoge{})
 }
 ```
