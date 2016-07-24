@@ -92,6 +92,40 @@ func TestGodbcManager_Insert(t *testing.T) {
 	}
 }
 
+func TestGodbcManager_toString(t *testing.T) {
+	if actual, _ := toString(1); actual != "1" {
+		t.Fatalf("fatal.\nactual: %s", actual)
+	}
+	if actual, _ := toString("string"); actual != "string" {
+		t.Fatalf("fatal.\nactual: %s", actual)
+	}
+	if actual, _ := toString(true); actual != "true" {
+		t.Fatalf("fatal.\nactual: %s", actual)
+	}
+	if actual, err := toString([]byte{}); err == nil {
+		t.Fatalf("fatal.\nactual: %s", actual)
+	}
+}
+
+func TestGodbcManager_createSentence(t *testing.T) {
+	type Success struct {
+		Id int
+		Name string
+		Flg bool
+	}
+	expect := ""
+	if actual, _ := createSentence(Success{}); actual == expect {
+		t.Fatalf("fail.\nactual: %s, expect: %s", actual, expect)
+	}
+
+	type Fail struct {
+		FailField []byte
+	}
+	if _, err := createSentence(Fail{}); err == nil {
+		t.Fatalf("should have error.")
+	}
+}
+
 func TestGodbcManager_Readme(t *testing.T) {
 	// 構造体の定義
 	type Hoge struct {

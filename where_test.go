@@ -27,6 +27,10 @@ func TestWhere_toString(t *testing.T) {
 	if actual, _ := where.toString(); actual != "" {
 		t.Fatalf("fatal. %s", actual)
 	}
+	where = Where{"Id", []byte{}, EQUAL}
+	if actual, err := where.toString(); err == nil {
+		t.Fatalf("error should not be empty. %s", actual)
+	}
 
 	expect := `WHERE Name LIKE "%name%"`
 	where = Where{"Name", "name", LIKE}

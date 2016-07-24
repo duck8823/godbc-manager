@@ -47,11 +47,7 @@ func (fromCase *fromCase) List() ([]interface{}, error) {
 			valuePointers[i] = &values[i]
 		}
 
-		err := rows.Scan(valuePointers...)
-		if err != nil {
-			return nil, err
-		}
-
+		rows.Scan(valuePointers...)
 		for i := 0; i < t.NumField(); i++ {
 			field := v.Field(i)
 			value := values[i]
@@ -79,9 +75,8 @@ func (fromCase *fromCase) Delete() (*executable) {
 	return &executable{fromCase.manager, fmt.Sprintf(`DELETE FROM %s %s`, t.Name(), where), err}
 }
 
-func setValue(field reflect.Value, value interface{}) () {
+func setValue(field reflect.Value, value interface{}) {
 	switch field.Kind() {
-	default:
 	case reflect.Int:
 		value = int(value.(int64))
 	case reflect.String:

@@ -28,6 +28,17 @@ func TestGodbcManager_List(t *testing.T) {
 	if len(errs) > 0 {
 		t.Fatal(errs)
 	}
+
+	if actual, err := manager.From(&Test{}).Where(Where{"Id", []byte{}, EQUAL}).List(); err == nil {
+		t.Fatalf("error should not be nil.: %s", actual)
+	}
+
+	type NotExist struct {
+		Id int
+	}
+	if actual, err := manager.From(&NotExist{}).List(); err == nil {
+		t.Fatalf("error should not be nil.: %s", actual)
+	}
 }
 
 func TestGodbcManager_FindSingleResult(t *testing.T) {
@@ -41,7 +52,15 @@ func TestGodbcManager_FindSingleResult(t *testing.T) {
 	expect := Test{1, "name_1", true}
 
 	if !reflect.DeepEqual(actual, expect) {
-		t.Errorf("データが一致しません.\nactual: %s, expect: %s", actual, expect)
+		t.Fatalf("データが一致しません.\nactual: %s, expect: %s", actual, expect)
+	}
+
+	if actual, err := manager.From(&Test{}).Where(Where{"Id", []byte{}, EQUAL}).SingleResult(); err == nil {
+		t.Fatalf("error should not be nil.\nactual: %s", actual)
+	}
+
+	if actual, err := manager.From(&Test{}).SingleResult(); err == nil {
+		t.Fatalf("error should not be nil.\nactual: %s", actual)
 	}
 }
 
