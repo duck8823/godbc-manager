@@ -20,6 +20,7 @@ import (
 	"github.com/duck8823/godbc-manager"
 )
 
+// 構造体の定義
 type Hoge struct {
 	Id int
 	Name string
@@ -27,17 +28,31 @@ type Hoge struct {
 }
 
 func main() {
+	// データベースへの接続
 	manager, _ := godbc.Connection("sqlite3", "./test.db")
-	manager.Create(Hoge{})
-	manager.Insert(Hoge{1, "name1", true})
-	manager.Insert(Hoge{2, "name2", false})
-
-	rows, _ := manager.FindAll(&Hoge{})
+	// テーブルの作成
+	manager.Create(Hoge{}).Execute()
+	// データの挿入
+	manager.Insert(Hoge{1, "name1", true}).Execute()
+	manager.Insert(Hoge{2, "name2", false}).Execute()
+	// データの取得(リスト)
+	rows, _ := manager.From(&Hoge{}).List()
 	for i := range rows {
 		fmt.Println(rows[i].(Hoge))
 	}
-
-	manager.Drop(Hoge{})
+	// データの取得(一意)
+	row, _ := manager.From(&Hoge{}).Where(Where{"Id", 1, EQUAL}).SingleResult()
+	fmt.Println(row.(Hoge))
+	// データの削除
+	manager.From(&Hoge{}).Where(Where{"Id", 1, EQUAL}).Delete().Execute()
+	// テーブルの削除
+	manager.Drop(Hoge{}).Execute()
+	
+	// SQLの取得
+	createSQL, err := manager.Create(Hoge{}).GetSQL()
+	insertSQL, err := manager.Insert(Hoge{1, "name1", true}).GetSQL()
+	deleteSQL, err := manager.From(&Hoge{}).Where(Where{"Id", 1, EQUAL}).Delete().GetSQL()
+	dropSQL,   err := manager.Drop(Hoge{}).GetSQL()
 }
 ```
 

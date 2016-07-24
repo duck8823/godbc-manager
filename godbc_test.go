@@ -7,6 +7,7 @@ import (
 )
 
 var manager GodbcManager
+
 type Test struct {
 	Id int
 	Name string
@@ -23,8 +24,8 @@ func TestConnection(t *testing.T) {
 }
 
 func TestGodbcManager_Create(t *testing.T) {
-	manager.Drop(Test{})
-	manager.Create(Test{})
+	manager.Drop(Test{}).Execute()
+	manager.Create(Test{}).Execute()
 
 	rows, _ := manager.db.Query(
 		`SELECT * FROM test`,
@@ -38,10 +39,10 @@ func TestGodbcManager_Create(t *testing.T) {
 }
 
 func TestGodbcManager_Drop(t *testing.T) {
-	manager.Drop(Test{})
-	manager.Create(Test{})
+	manager.Drop(Test{}).Execute()
+	manager.Create(Test{}).Execute()
 
-	manager.Drop(Test{})
+	manager.Drop(Test{}).Execute()
 	_ , err := manager.db.Query(
 		`SELECT * FROM test`,
 	)
@@ -51,11 +52,11 @@ func TestGodbcManager_Drop(t *testing.T) {
 }
 
 func TestGodbcManager_Insert(t *testing.T) {
-	manager.Drop(Test{})
-	manager.Create(Test{})
+	manager.Drop(Test{}).Execute()
+	manager.Create(Test{}).Execute()
 
-	manager.Insert(Test{1, "name_1", true})
-	manager.Insert(Test{2, "name_2", false})
+	manager.Insert(Test{1, "name_1", true}).Execute()
+	manager.Insert(Test{2, "name_2", false}).Execute()
 
 	expect := []Test{{1, "name_1", true}, {2, "name_2", false}}
 
@@ -79,7 +80,7 @@ func TestGodbcManager_Insert(t *testing.T) {
 	var err []interface{}
 	i := 0
 	for actual.Next() {
-		test := Test {}
+		test := Test{}
 		actual.Scan(&test.Id, &test.Name, &test.Flg)
 		if !reflect.DeepEqual(test, expect[i]) {
 			err = append(err, "データが一致しません.", test, expect[i])
@@ -91,24 +92,31 @@ func TestGodbcManager_Insert(t *testing.T) {
 	}
 }
 
-func TestGodbcManager_FindAll(t *testing.T) {
-	manager.Drop(Test{})
-	manager.Create(Test{})
-
-	manager.Insert(Test{1, "name_1", true})
-	manager.Insert(Test{2, "name_2", false})
-
-	actual, _ := manager.FindAll(&Test{})
-	expect := []Test{{1, "name_1", true}, {2, "name_2", false}}
-
-	var err []interface{}
-	for i := range actual {
-		if !reflect.DeepEqual(actual[i], expect[i]) {
-			err = append(err, "データが一致しません.", actual[i], expect[i])
-		}
-		i++
+func TestGodbcManager_Readme(t *testing.T) {
+	// 構造体の定義
+	type Hoge struct {
+		Id int
+		Name string
+		Flg bool
 	}
-	if len(err) > 0 {
-		t.Fatal(err)
-	}
+	// データベースへの接続
+	manager, _ := Connection("sqlite3", "./test.db")
+	// テーブルの作成
+	manager.Create(Hoge{}).Execute()
+	// データの挿入
+	manager.Insert(Hoge{1, "name1", true}).Execute()
+	manager.Insert(Hoge{2, "name2", false}).Execute()
+	// データの取得(リスト)
+	manager.From(&Hoge{}).List()
+	// データの取得(一意)
+	manager.From(&Hoge{}).Where(Where{"Id", 1, EQUAL}).SingleResult()
+	// データの削除
+	manager.From(&Hoge{}).Where(Where{"Id", 1, EQUAL}).Delete().Execute()
+	// テーブルの削除
+	manager.Drop(Hoge{}).Execute()
+	// SQLの取得
+	manager.Create(Hoge{}).GetSQL()
+	manager.Insert(Hoge{1, "name1", true}).GetSQL()
+	manager.From(&Hoge{}).Where(Where{"Id", 1, EQUAL}).Delete().GetSQL()
+	manager.Drop(Hoge{}).GetSQL()
 }
