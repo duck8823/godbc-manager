@@ -41,17 +41,17 @@ func main() {
 		fmt.Println(rows[i].(Hoge))
 	}
 	// データの取得(一意)
-	row, _ := manager.From(&Hoge{}).Where(Where{"Id", 1, EQUAL}).SingleResult()
+	row, _ := manager.From(&Hoge{}).Where(godbc.Where{"Id", 1, godbc.EQUAL}).SingleResult()
 	fmt.Println(row.(Hoge))
 	// データの削除
-	manager.From(&Hoge{}).Where(Where{"Id", 1, EQUAL}).Delete().Execute()
+	manager.From(&Hoge{}).Where(godbc.Where{"Id", 1, godbc.EQUAL}).Delete().Execute()
 	// テーブルの削除
 	manager.Drop(Hoge{}).Execute()
 	
 	// SQLの取得
 	createSQL, err := manager.Create(Hoge{}).GetSQL()
 	insertSQL, err := manager.Insert(Hoge{1, "name1", true}).GetSQL()
-	deleteSQL, err := manager.From(&Hoge{}).Where(Where{"Id", 1, EQUAL}).Delete().GetSQL()
+	deleteSQL, err := manager.From(&Hoge{}).Where(godbc.Where{"Id", 1, EQUAL}).Delete().GetSQL()
 	dropSQL,   err := manager.Drop(Hoge{}).GetSQL()
 }
 ```
