@@ -14,24 +14,24 @@ const (
 )
 
 type Where struct {
-	column interface{}
-	value  interface{}
-	operator Operator
+	Column   interface{}
+	Value    interface{}
+	Operator Operator
 }
 
 func (where *Where) toString() (string, error) {
-	if where.column == nil && where.value == nil {
+	if where.Column == nil && where.Value == nil {
 		return "", nil
-	} else if (where.column == nil && where.value != nil) || (where.column != nil && where.value == nil) {
+	} else if (where.Column == nil && where.Value != nil) || (where.Column != nil && where.Value == nil) {
 		return "", errors.New(fmt.Sprintf("error: %s", where))
 	}
-	value, err := toString(where.value)
+	value, err := toString(where.Value)
 	if err != nil {
 		return "", err
 	}
-	switch where.operator {
+	switch where.Operator {
 	case LIKE:
 		value = "%" + value + "%"
 	}
-	return fmt.Sprintf(`WHERE %s %s "%s"`, where.column, where.operator, value), nil
+	return fmt.Sprintf(`WHERE %s %s "%s"`, where.Column, where.Operator, value), nil
 }

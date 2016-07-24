@@ -51,7 +51,7 @@ func main() {
 	// SQLの取得
 	createSQL, err := manager.Create(Hoge{}).GetSQL()
 	insertSQL, err := manager.Insert(Hoge{1, "name1", true}).GetSQL()
-	deleteSQL, err := manager.From(&Hoge{}).Where(godbc.Where{"Id", 1, EQUAL}).Delete().GetSQL()
+```	deleteSQL, err := manager.From(&Hoge{}).Where(godbc.Where{"Id", 1, godbc.EQUAL}).Delete().GetSQL()
 	dropSQL,   err := manager.Drop(Hoge{}).GetSQL()
 }
 ```
