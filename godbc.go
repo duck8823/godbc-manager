@@ -38,11 +38,11 @@ func (manager *GodbcManager) Create(entity interface{}) (*executable) {
 		default:
 			return &executable{err: errors.New("次の型は対応していません. :" + reflect.ValueOf(fv).Type().Name())}
 		case string:
-			schema[i] = "\"" + f.Name + "\" TEXT"
+			schema[i] = "'" + f.Name + "' TEXT"
 		case int:
-			schema[i] = "\"" + f.Name + "\" INTEGER"
+			schema[i] = "'" + f.Name + "' INTEGER"
 		case bool:
-			schema[i] = "\"" + f.Name + "\" BOOLEAN"
+			schema[i] = "'" + f.Name + "' BOOLEAN"
 		}
 	}
 	return &executable{manager, fmt.Sprintf(`CREATE TABLE %s (%s)`, t.Name(), strings.Join(schema, ",")), nil}
