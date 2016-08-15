@@ -33,5 +33,5 @@ func (where *Where) toString() (string, error) {
 	case LIKE:
 		value = "%" + value + "%"
 	}
-	return fmt.Sprintf(`WHERE %s %s "%s"`, where.Column, where.Operator, value), nil
+	return fmt.Sprintf(`WHERE %s %s '%s'`, where.Column, where.Operator, value), nil
 }

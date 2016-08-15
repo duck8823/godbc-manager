@@ -13,7 +13,7 @@ func TestExecutable_Execute(t *testing.T) {
 	}
 	err := manager.Create(Fail{}).Execute()
 	if err == nil {
-		t.Fatalf("error should not be nil.")
+		t.Fatal("error should not be nil.")
 	}
 
 	type Success struct {
@@ -27,7 +27,7 @@ func TestExecutable_Execute(t *testing.T) {
 	}
 	err = manager.Create(Success{}).Execute()
 	if err == nil {
-		t.Fatalf("error should not be nil.")
+		t.Fatal("error should not be nil.")
 	}
 }
 
@@ -37,7 +37,7 @@ func TestExecutable_GetSQL(t *testing.T) {
 		Name string
 	}
 	actual, _ := manager.Create(Hoge{}).GetSQL()
-	expect := `CREATE TABLE Hoge ("Id" INTEGER,"Name" TEXT)`
+	expect := `CREATE TABLE Hoge ('Id' INTEGER,'Name' TEXT)`
 	if actual != expect {
 		t.Fatalf("fatal.\nactual: %s, expect:%s", actual, expect)
 	}

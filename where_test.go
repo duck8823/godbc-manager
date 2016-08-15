@@ -3,12 +3,16 @@ package godbc
 import (
 	"testing"
 	"fmt"
+	"reflect"
 )
 
 func TestWhere_new(t *testing.T) {
 	where := Where{"Id", 1, EQUAL}
+	if reflect.TypeOf(where) != reflect.TypeOf(Where{}) {
+		t.Fatalf("fatal.\nactual: %s, expect: %s", reflect.TypeOf(where), reflect.TypeOf(Where{}))
+	}
 	actual, _ := where.toString()
-	expect := `WHERE Id = "1"`
+	expect := `WHERE Id = '1'`
 	if actual != expect {
 		t.Fatalf("fatal.\nactual: %s, expect: %s", actual, expect)
 	}
@@ -32,7 +36,7 @@ func TestWhere_toString(t *testing.T) {
 		t.Fatalf("error should not be empty. %s", actual)
 	}
 
-	expect := `WHERE Name LIKE "%name%"`
+	expect := `WHERE Name LIKE '%name%'`
 	where = Where{"Name", "name", LIKE}
 	if actual, _ := where.toString(); actual != expect {
 		t.Fatalf("fatal.\nactual: %s, expect: %s", actual, expect)

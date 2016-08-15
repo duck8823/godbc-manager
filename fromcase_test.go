@@ -41,7 +41,7 @@ func TestGodbcManager_List(t *testing.T) {
 	}
 }
 
-func TestGodbcManager_FindSingleResult(t *testing.T) {
+func TestGodbcManager_SingleResult(t *testing.T) {
 	manager.Drop(Test{}).Execute()
 	manager.Create(Test{}).Execute()
 
