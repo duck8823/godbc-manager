@@ -3,7 +3,7 @@ package godbc
 import "testing"
 
 func TestExecutable_init(t *testing.T) {
-	manager, _ = Connection("sqlite3", "./test.db")
+	manager, _ = Connect("sqlite3", "./test.db")
 }
 
 func TestExecutable_Execute(t *testing.T) {
@@ -37,7 +37,7 @@ func TestExecutable_GetSQL(t *testing.T) {
 		Name string
 	}
 	actual, _ := manager.Create(Hoge{}).GetSQL()
-	expect := `CREATE TABLE Hoge ('Id' INTEGER,'Name' TEXT)`
+	expect := `CREATE TABLE Hoge (Id INTEGER,Name TEXT)`
 	if actual != expect {
 		t.Fatalf("fatal.\nactual: %s, expect:%s", actual, expect)
 	}

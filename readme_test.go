@@ -1,33 +1,17 @@
-# GodbcManager
-[![Build Status](https://travis-ci.org/duck8823/godbc-manager.svg?branch=master)](https://travis-ci.org/duck8823/godbc-manager)
-[![Coverage Status](http://coveralls.io/repos/github/duck8823/godbc-manager/badge.svg?branch=master)](https://coveralls.io/github/duck8823/godbc-manager?branch=master)
-[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)  
-  
-構造体でデータベース操作する  
-  
-## INSTALL
-```sh
-go get github.com/duck8823/godbc-manager
-```
-  
-## SYNOPSIS
-```go
-package main
+package godbc
 
 import (
-	"fmt"
+	"testing"
 	_ "github.com/lib/pq"
-	"github.com/duck8823/godbc-manager"
 )
 
-// 構造体の定義
-type Hoge struct {
-	Id int
-	Name string
-	Flg bool
-}
-
-func main() {
+func TestGodbcManager_Readme(t *testing.T) {
+	// 構造体の定義
+	type Hoge struct {
+		Id int
+		Name string
+		Flg bool
+	}
 	// データベースへの接続
 	manager, _ := Connect("postgres", "dbname=test host=localhost user=postgres")
 	// テーブルの作成
@@ -50,7 +34,3 @@ func main() {
 	manager.From(&Hoge{}).Where(Where{"Id", 1, EQUAL}).Delete().GetSQL()
 	manager.Drop(Hoge{}).GetSQL()
 }
-```
-
-## License
-MIT License

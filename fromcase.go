@@ -63,8 +63,8 @@ func (fromCase *fromCase) SingleResult() (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	if len := len(result); len > 1 {
-		return nil, errors.New("結果が1意でありません.")
+	if len_ := len(result); len_ > 1 {
+		return nil, errors.New("結果が一意でありません.")
 	}
 	return result[0], nil;
 }
@@ -80,9 +80,13 @@ func setValue(field reflect.Value, value interface{}) {
 	case reflect.Int:
 		value = int(value.(int64))
 	case reflect.String:
-		value = string(value.([]byte))
+		if _, success := value.(string); !success {
+			value = string(value.([]byte))
+		}
 	case reflect.Bool:
-		value, _ = strconv.ParseBool(string(value.([]byte)))
+		if _, success := value.(bool); !success {
+			value, _ = strconv.ParseBool(string(value.([]byte)))
+		}
 	}
 	field.Set(reflect.ValueOf(value))
 }
