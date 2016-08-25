@@ -6,10 +6,11 @@ import (
 	"strings"
 	"errors"
 	"fmt"
+	"database/sql"
 )
 
 type fromCase struct {
-	manager *GodbcManager
+	db sql.DB
 	from interface{}
 	where Where
 }
@@ -33,7 +34,7 @@ func (fromCase *fromCase) List() ([]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	rows, err := fromCase.manager.db.Query(
+	rows, err := fromCase.db.Query(
 		fmt.Sprintf(`SELECT %s FROM %s %s`, strings.Join(cols, ","), t.Name(), where),
 	)
 	if err != nil {
@@ -72,7 +73,7 @@ func (fromCase *fromCase) SingleResult() (interface{}, error) {
 func (fromCase *fromCase) Delete() (*executable) {
 	t := reflect.TypeOf(fromCase.from).Elem()
 	where, err := fromCase.where.toString()
-	return &executable{fromCase.manager, fmt.Sprintf(`DELETE FROM %s %s`, t.Name(), where), err}
+	return &executable{fromCase.db, fmt.Sprintf(`DELETE FROM %s %s`, t.Name(), where), err}
 }
 
 func setValue(field reflect.Value, value interface{}) {

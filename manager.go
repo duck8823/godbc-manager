@@ -19,12 +19,12 @@ func Connect(driverName string, dataSourceName string) (GodbcManager, error) {
 }
 
 func (manager *GodbcManager) From(entity interface{}) (*fromCase) {
-	return &fromCase{manager, entity, Where{}}
+	return &fromCase{manager.db, entity, Where{}}
 }
 
 func (manager *GodbcManager) Drop(entity interface{}) (*executable) {
 	name := reflect.TypeOf(entity).Name()
-	return &executable{manager, fmt.Sprintf(`DROP TABLE IF EXISTS %s`, name), nil}
+	return &executable{manager.db, fmt.Sprintf(`DROP TABLE IF EXISTS %s`, name), nil}
 }
 
 func (manager *GodbcManager) Create(entity interface{}) (*executable) {
@@ -45,12 +45,12 @@ func (manager *GodbcManager) Create(entity interface{}) (*executable) {
 			schema[i] = f.Name + " BOOLEAN"
 		}
 	}
-	return &executable{manager, fmt.Sprintf(`CREATE TABLE %s (%s)`, t.Name(), strings.Join(schema, ",")), nil}
+	return &executable{manager.db, fmt.Sprintf(`CREATE TABLE %s (%s)`, t.Name(), strings.Join(schema, ",")), nil}
 }
 
 func (manager *GodbcManager) Insert(data interface{}) (*executable) {
 	sentence, err := createSentence(data)
-	return &executable{manager, fmt.Sprintf(`INSERT INTO %s %s`, reflect.TypeOf(data).Name(), sentence), err}
+	return &executable{manager.db, fmt.Sprintf(`INSERT INTO %s %s`, reflect.TypeOf(data).Name(), sentence), err}
 }
 
 func createSentence(data interface{}) (string, error) {
