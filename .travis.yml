@@ -10,4 +10,4 @@ before_script:
  - psql -c 'create database test;' -U postgres
 script:
  - go test -v -covermode=count -coverprofile=coverage.out
- - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken IItVVqwdUfiogoiv0KJ3GKTLIpzLcNLhG
+ - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
